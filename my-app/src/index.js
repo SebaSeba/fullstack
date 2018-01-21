@@ -10,44 +10,46 @@ const App = () => {
     const osa3 = 'Komponenttien tila'
     const tehtavia3 = 14
 
-return (
-    <div>
-      <Otsikko kurssi={kurssi}/>
-      <Sisalto sisalto={osa1}/>
-      <Yhteensa yhteensa={1}/>
-    </div>
-)
-}
-
-const Sisalto = () => {
     return (
         <div>
-         <Osa />
-         <Osa />
-         <Osa />
-      </div> 
+            <Otsikko kurssi={kurssi} />
+            <Sisalto osa1={osa1} osa2={osa2} osa3={osa3} tehtavia1={tehtavia1} tehtavia2={tehtavia2} tehtavia3={tehtavia3} />
+            <Yhteensa tehtavia1={tehtavia1} tehtavia2={tehtavia2} tehtavia3={tehtavia3} />
+        </div>
     )
 }
 
-const Osa = () => {
+const Yhteensa = (props) => {
     return (
         <div>
-            <
-      </div> 
+            <p>yhteensä {props.tehtavia1 + props.tehtavia2 + props.tehtavia3} tehtävää</p>
+        </div>
     )
 }
 
-const Otsikko = () => {
+const Otsikko = (props) => {
     return (
         <div>
-      </div> 
+            <h1>{props.kurssi}</h1>
+        </div>
     )
 }
 
-const Yhteensa = () => {
+const Sisalto = (props) => {
     return (
         <div>
-      </div> 
+            <Osa osa={props.osa1} tehtavia={props.tehtavia1} />
+            <Osa osa={props.osa2} tehtavia={props.tehtavia2} />
+            <Osa osa={props.osa3} tehtavia={props.tehtavia3} />
+        </div>
+    )
+}
+
+const Osa = (props) => {
+    return (
+        <div>
+            <p>{props.osa} {props.tehtavia}</p>
+        </div>
     )
 }
 
