@@ -9,7 +9,7 @@ class App extends React.Component {
             votes: new Array(anecdotes.length - 1)
         }
     }
-
+    
     getRandomInt = (min, max) => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -19,10 +19,10 @@ class App extends React.Component {
             selected: this.getRandomInt(0, anecdotes.length - 1)
         })
     }
-
+    
     voteSelected = (votes, voted) => {
-        return () => {
-            let newVotes = votes
+        return () => {      
+        let newVotes = votes
             if (!votes[voted]) {
                 votes[voted] = 0
             }                        
@@ -32,7 +32,6 @@ class App extends React.Component {
             })
         }
     }
-
 
     render() {
         let votes = 0
