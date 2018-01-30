@@ -5,8 +5,15 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      countries: []
+      countries: [],
+      filter: ''
     }
+  }
+
+  handleFilterChange(event) {
+    this.setState({
+      filter: event.target.value
+    })
   }
 
   componentWillMount() {
@@ -22,31 +29,54 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Find />
-        <ul>
-        <Countries countries={this.state.countries} />
-        </ul>
+        <Find filter={this.state.filter} handleFilterChange={this.handleFilterChange.bind(this)} />
+        <Countries countries={this.state.countries} filter={this.state.filter} />
       </div>
     )
   }
 }
 
-const Find = () => {
+const Find = ({ filter, handleFilterChange }) => {
   return (
     <div>
-      Find countries: <input />
+      Find countries: <input value={filter} onChange={handleFilterChange} />
     </div>
   )
 }
 
-const Countries = ({countries}) => {
+const Countries = ({ countries, filter }) => {
+
   if (countries.length > 0) {
-    console.log(countries)
-    return (
-      <div>
-        countries.map(country => <li key={country.name}><Country country={country} /></li>)
-      </div>
-    )
+
+    let filteredCountries = countries
+    if (filter !== '') {
+      filteredCountries = filteredCountries.filter(country => country.name.toUpperCase().includes(filter.toUpperCase()))
+    }
+
+    if (filteredCountries.length > 10) {
+      return (
+        <div>
+          <p>too many matches, specify another filter</p>
+        </div>
+      )
+    } else if (filteredCountries.length <= 10 && filteredCountries.length > 1) {
+      return (
+        <div>
+          {filteredCountries.map(country => <Country key={country.name} country={country} />)}
+        </div>
+      )
+    } else if (filteredCountries.length === 1) {
+      return (
+        <div>
+          <CountryDetails country={filteredCountries[0]} />
+        </div>
+      )
+    } else {
+      return (
+        <div>
+        </div>
+      )
+    }
   } else {
     return (
       <div>
@@ -55,12 +85,26 @@ const Countries = ({countries}) => {
   }
 }
 
+const CountryDetails = ({ country }) => {
+  console.log(country.flag)
+  return (
+    <div>
+      <h2>{country.name}</h2>
+      {country.capital}<br />
+      <br />
+      {country.population}<br />
+      <br />
+      <img src={country.flag} alt="Country flag" />
+    </div>
+  )
+}
+
 const Country = ({ country }) => {
   return (
     <div>
-      {country.name}
-    </div>
-  )
+      { country.name }
+      </div >
+      )
 }
 
 export default App;
