@@ -1,5 +1,5 @@
-import React from 'react';
-import Name from './Name';
+import React from 'react'
+import Person from './Person'
 
 const PersonComponents = (props) => {
     let ps = props.persons
@@ -7,7 +7,11 @@ const PersonComponents = (props) => {
         ps = ps.filter(person => person.name.toUpperCase().includes(props.filter.toUpperCase()))
     }
     return (
-        ps.map(person => <li key={person.name}><Name person={person} /></li>)
+        <table>
+            <tbody>
+                {ps.map(person => <Person key={person.id} person={person} handleClick={props.handleClick} />)}
+            </tbody>
+        </table>
     )
 }
 

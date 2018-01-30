@@ -1,6 +1,6 @@
-import React from 'react';
-import axios from 'axios';
+import React from 'react'
 import PersonComponents from './PersonComponents';
+import personService from '../services/PersonService'
 
 export class App extends React.Component {
   constructor(props) {
@@ -14,13 +14,13 @@ export class App extends React.Component {
   }
 
   componentWillMount() {
-    axios
-    .get('http://localhost:3001/persons')
-    .then(response => {
-      this.setState({
-        persons: response.data
+    personService
+      .getAll()
+      .then(persons => {
+        this.setState({
+          persons
+        })
       })
-    })
   }
 
   handleFilterChange = (event) => {
@@ -44,15 +44,41 @@ export class App extends React.Component {
     }
 
     if (this.state.persons.some(x => x.name === person.name)) {
-      alert("The person is already included in the list!")
+      if (window.confirm(person.name + ' on jo luettelossa, korvataanko vanha numero uudella?')) {
+        let p = this.state.persons.filter(x => x.name === person.name)[0]
+        p.number = person.number
+        personService.update(p).then(person => {
+          let filtered = this.state.persons.filter(x => x.id !== person.id)
+          this.setState({
+            persons: filtered.concat(person),
+            newName: '',
+            newNumber: ''
+          })
+        })
+      }
     } else {
-      const persons = this.state.persons.concat(person)
+      personService.create(person)
+        .then(person => {
+          this.setState({
+            persons: this.state.persons.concat(person),
+            newName: '',
+            newNumber: ''
+          })
+        }
+        )
+    }
+  }
 
-      this.setState({
-        persons,
-        newName: '',
-        newNumber: ''
-      })
+  handleClick = (id) => {
+    return () => {
+      const name = this.state.persons.filter(person => person.id === id)[0].name
+      if (window.confirm('Poistetaanko ' + name)) {
+        personService.remove(id).then(
+          this.setState({
+            persons: this.state.persons.filter(person => person.id !== id)
+          })
+        )
+      }
     }
   }
 
@@ -77,7 +103,7 @@ export class App extends React.Component {
         <h2>Numerot</h2>
         <div>
           <ul>
-            <PersonComponents persons={this.state.persons} filter={this.state.filter} />
+            <PersonComponents persons={this.state.persons} filter={this.state.filter} handleClick={this.handleClick} />
           </ul>
         </div>
       </div>
