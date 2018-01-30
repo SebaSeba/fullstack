@@ -9,7 +9,8 @@ export class App extends React.Component {
       persons: [],
       newName: '',
       newNumber: '',
-      filter: ''
+      filter: '',
+      notification: null
     }
   }
 
@@ -54,6 +55,11 @@ export class App extends React.Component {
             newName: '',
             newNumber: ''
           })
+        }).catch(error => {
+          alert(`henkilö '${p.name}' on jo valitettavasti poistettu palvelimelta`)
+          this.setState({
+            persons: this.state.persons.filter(x => x.id !== p.id)
+          })
         })
       }
     } else {
@@ -62,8 +68,12 @@ export class App extends React.Component {
           this.setState({
             persons: this.state.persons.concat(person),
             newName: '',
-            newNumber: ''
+            newNumber: '',
+            notification: 'lisättiin ' + person.name
           })
+          setTimeout(() => {
+            this.setState({ notification: null })
+          }, 3000)
         }
         )
     }
@@ -86,6 +96,7 @@ export class App extends React.Component {
     return (
       <div>
         <h2>Puhelinluettelo</h2>
+        <Notification message={this.state.notification} />
         Rajaa näytettäviä: <input value={this.state.filter} onChange={this.handleFilterChange} />
         <form onSubmit={this.addNameAndNumber}>
           <div>
@@ -109,6 +120,17 @@ export class App extends React.Component {
       </div>
     )
   }
+}
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className="notification">
+      {message}
+    </div>
+  )
 }
 
 export default App
